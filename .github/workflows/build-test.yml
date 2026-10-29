@@ -1,0 +1,30 @@
+name: Build Test (temporary)
+on:
+  workflow_dispatch:
+  push:
+    branches: ["master"]
+permissions:
+  contents: read
+jobs:
+  build-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1.328.0
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+          cache-version: 0
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --baseurl "/LJT-Homepage"
+        env:
+          JEKYLL_ENV: production
+      - name: List output
+        run: |
+          echo "=== _site contents ==="
+          ls -la _site
+          echo "=== publications ==="
+          ls -la _site/publications || true
+          echo "BUILD OK"
