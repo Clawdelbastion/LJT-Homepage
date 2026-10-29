@@ -1,0 +1,24 @@
+name: Enable Pages (temporary)
+on:
+  workflow_dispatch:
+  push:
+    branches: ["master"]
+permissions:
+  contents: read
+  pages: write
+jobs:
+  enable:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable Pages site
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "== Attempting to enable Pages (build_type=workflow) =="
+          if gh api --method POST /repos/${{ github.repository }}/pages -f build_type=workflow; then
+            echo "ENABLE_OK"
+          else
+            echo "ENABLE_FAILED"
+          fi
+          echo "== Current Pages info =="
+          gh api /repos/${{ github.repository }}/pages || true
